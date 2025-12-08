@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Footer() {
   return (
     <footer className="bg-gray-50 border-t border-gray-200">
@@ -30,13 +32,21 @@ export default function Footer() {
           <div className="text-center text-sm text-gray-600 space-y-2">
             <p>&copy; {new Date().getFullYear()} AquaEnergy AI. Alle rettigheter reservert.</p>
             <p>
-              E-post: <a href="mailto:info@aquaenergy.com" className="text-primary-600 hover:text-primary-700">info@aquaenergy.com</a>
+              E-post: <a href="mailto:post@aquaenergyai.com" className="text-primary-600 hover:text-primary-700">post@aquaenergyai.com</a>
             </p>
             <p>
               Kontaktperson: Remi Lie | <a href="tel:+4790024636" className="text-primary-600 hover:text-primary-700">900 24 636</a>
             </p>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-4">
+              <Link href="#contact" className="text-primary-600 hover:text-primary-700 text-sm font-semibold">
+                Book demo →
+              </Link>
+              <Link href="#" className="text-primary-600 hover:text-primary-700 text-sm">
+                Personvern →
+              </Link>
+            </div>
             <p className="text-xs text-gray-500 mt-4">
-              Vi behandler personopplysninger i henhold til GDPR. Les vår <a href="#" className="text-primary-600 hover:underline">personvernpolicy</a>.
+              Vi behandler personopplysninger i henhold til GDPR.
             </p>
           </div>
         </div>
