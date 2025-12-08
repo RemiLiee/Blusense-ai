@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { database } from '@/lib/database';
 import { optimizationEngine } from '@/lib/optimization';
 
+// Mark as dynamic route (API routes are always dynamic)
+export const dynamic = 'force-dynamic';
+
 interface ControlRequest {
   gateway_id: string;
   action: 'pump_speed' | 'oxygen_level' | 'temperature' | 'auto_optimize';

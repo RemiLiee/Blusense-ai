@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { database } from '@/lib/database';
 import { optimizationEngine } from '@/lib/optimization';
 
+// Mark as dynamic route (API routes are always dynamic)
+export const dynamic = 'force-dynamic';
+
 interface SensorReading {
   id: string;
   type: string;

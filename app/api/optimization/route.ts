@@ -3,6 +3,9 @@ import { database } from '@/lib/database';
 import { optimizationEngine } from '@/lib/optimization';
 import { maintenanceEngine } from '@/lib/maintenance';
 
+// Mark as dynamic route (API routes are always dynamic)
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

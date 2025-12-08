@@ -18,58 +18,123 @@ export default function SavingsPage() {
     const fetchSavings = async () => {
       try {
         const response = await fetch('/api/optimization?gateway_id=demo-gateway');
+        
+        let analysis, totalSavings;
+        
         if (response.ok) {
           const result = await response.json();
+          analysis = result.analysis;
+          totalSavings = result.totalSavings;
+        } else {
+          // Use mock data if API fails
+          analysis = {
+            savingsAmount: 4500,
+            potentialSavings: 18.5,
+          };
+          totalSavings = {
+            savings: 18.5,
+            amount: 135000, // Total saved over time
+          };
+        }
           
-          // Calculate ROI (example: Plug & Play package)
-          const roi = optimizationEngine.calculateROI(
-            result.analysis.savingsAmount,
-            25000, // Initial cost
-            2990 // Monthly subscription
-          );
+        // Calculate ROI (example: Plug & Play package)
+        const roi = optimizationEngine.calculateROI(
+          analysis.savingsAmount || 4500,
+          25000, // Initial cost
+          2990 // Monthly subscription
+        );
 
-          // Generate mock historical data for visualization
-          const daily = [];
-          const monthly = [];
-          for (let i = 29; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            const dailySavings = result.analysis.savingsAmount * (0.8 + Math.random() * 0.4);
-            daily.push({
-              date: date.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' }),
-              savings: result.analysis.potentialSavings * (0.9 + Math.random() * 0.2),
-              amount: dailySavings,
-            });
-          }
-
-          // Monthly aggregation
-          const monthlyMap = new Map<string, { savings: number; amount: number; count: number }>();
-          daily.forEach(d => {
-            const month = new Date(d.date).toLocaleDateString('no-NO', { month: 'long', year: 'numeric' });
-            if (!monthlyMap.has(month)) {
-              monthlyMap.set(month, { savings: 0, amount: 0, count: 0 });
-            }
-            const monthData = monthlyMap.get(month)!;
-            monthData.savings += d.savings;
-            monthData.amount += d.amount;
-            monthData.count += 1;
-          });
-
-          monthly.push(...Array.from(monthlyMap.entries()).map(([month, data]) => ({
-            month,
-            savings: data.savings / data.count,
-            amount: data.amount,
-          })));
-
-          setSavingsData({
-            daily,
-            monthly,
-            total: result.totalSavings,
-            roi,
+        // Generate mock historical data for visualization
+        const daily = [];
+        const monthly = [];
+        const baseSavings = analysis.savingsAmount || 4500;
+        const basePercent = analysis.potentialSavings || 18.5;
+        
+        for (let i = 29; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const dailySavings = (baseSavings / 30) * (0.8 + Math.random() * 0.4);
+          daily.push({
+            date: date.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' }),
+            savings: basePercent * (0.9 + Math.random() * 0.2),
+            amount: dailySavings,
           });
         }
+
+        // Monthly aggregation - simplified
+        const monthlyMap = new Map<string, { savings: number; amount: number; count: number }>();
+        const now = new Date();
+        daily.forEach((d, idx) => {
+          // Calculate date from index (days ago)
+          const dateObj = new Date(now);
+          dateObj.setDate(dateObj.getDate() - (29 - idx));
+          const monthKey = dateObj.toLocaleDateString('no-NO', { month: 'long', year: 'numeric' });
+          
+          if (!monthlyMap.has(monthKey)) {
+            monthlyMap.set(monthKey, { savings: 0, amount: 0, count: 0 });
+          }
+          const monthData = monthlyMap.get(monthKey)!;
+          monthData.savings += d.savings;
+          monthData.amount += d.amount;
+          monthData.count += 1;
+        });
+
+        monthly.push(...Array.from(monthlyMap.entries()).map(([month, data]) => ({
+          month,
+          savings: data.count > 0 ? data.savings / data.count : 0,
+          amount: data.amount,
+        })));
+
+        setSavingsData({
+          daily,
+          monthly,
+          total: totalSavings || { savings: basePercent, amount: baseSavings * 30 },
+          roi,
+        });
       } catch (error) {
         console.error('Error fetching savings:', error);
+        // Fallback to mock data
+        const mockRoi = optimizationEngine.calculateROI(4500, 25000, 2990);
+        const daily = [];
+        for (let i = 29; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          daily.push({
+            date: date.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' }),
+            savings: 18.5 * (0.9 + Math.random() * 0.2),
+            amount: 150 * (0.8 + Math.random() * 0.4),
+          });
+        }
+        
+        // Generate monthly data for fallback
+        const monthlyMap = new Map<string, { savings: number; amount: number; count: number }>();
+        const now = new Date();
+        daily.forEach((d, idx) => {
+          const dateObj = new Date(now);
+          dateObj.setDate(dateObj.getDate() - (29 - idx));
+          const monthKey = dateObj.toLocaleDateString('no-NO', { month: 'long', year: 'numeric' });
+          
+          if (!monthlyMap.has(monthKey)) {
+            monthlyMap.set(monthKey, { savings: 0, amount: 0, count: 0 });
+          }
+          const monthData = monthlyMap.get(monthKey)!;
+          monthData.savings += d.savings;
+          monthData.amount += d.amount;
+          monthData.count += 1;
+        });
+        
+        const monthly = Array.from(monthlyMap.entries()).map(([month, data]) => ({
+          month,
+          savings: data.count > 0 ? data.savings / data.count : 0,
+          amount: data.amount,
+        }));
+        
+        setSavingsData({
+          daily,
+          monthly,
+          total: { savings: 18.5, amount: 135000 },
+          roi: mockRoi,
+        });
       } finally {
         setLoading(false);
       }
@@ -182,4 +247,6 @@ export default function SavingsPage() {
     </div>
   );
 }
+
+
 

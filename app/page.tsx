@@ -6,8 +6,48 @@ import ContactForm from '@/components/ContactForm';
 import ROIChart from '@/components/ROIChart';
 
 export default function Home() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "AquaEnergy AI",
+    "url": "https://aquaenergy.ai",
+    "logo": "https://aquaenergy.ai/logo.png",
+    "description": "Plug & Play sensorpakker + AI for energibesparelse i akvakulturanlegg",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+47-900-24-636",
+      "contactType": "customer service",
+      "email": "info@aquaenergy.com",
+      "areaServed": "NO",
+      "availableLanguage": "Norwegian"
+    },
+    "sameAs": [
+      // Legg til sosiale medier lenker her når de er tilgjengelige
+    ],
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Plug & Play — Startpakke",
+        "price": "25000",
+        "priceCurrency": "NOK",
+        "description": "Eastron SDM630, Clamp-on ultrasonisk flow, Optisk DO, PT100 temperatur, LoRaWAN/4G gateway"
+      },
+      {
+        "@type": "Offer",
+        "name": "Sjøklar — Industri-pakke",
+        "price": "55000",
+        "priceCurrency": "NOK",
+        "description": "Industriell energimåler, Industrial clamp-on flow, Optisk DO, 2x IP68 PT100, 2x vibrasjonssensor"
+      }
+    ]
+  };
+
   return (
     <div className="bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {/* Hero Section */}
       <section className="relative bg-white py-16 md:py-24 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 z-0">
