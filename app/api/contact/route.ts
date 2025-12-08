@@ -101,31 +101,45 @@ Sendt fra kontaktskjema på aquaenergyai.com
 ${new Date().toLocaleString('no-NO')}
     `.trim();
 
-    // Send e-post til begge adresser hvis Resend API key er konfigurert
+    // Send e-post til mottakeradresse hvis Resend API key er konfigurert
     if (!isDemoMode) {
-      const resend = new Resend(resendApiKey);
-      
-      await resend.emails.send({
-        from: 'AquaEnergy AI <onboarding@resend.dev>', // Du kan endre dette når du verifiserer ditt domene
-        to: ['info@aquaenergy.com', 'Remi.lie@aquaenergy.com'],
-        reply_to: email,
-        subject: `Ny forespørsel fra ${company} - AquaEnergy AI`,
-        html: htmlContent,
-        text: textContent,
-      });
+      try {
+        const resend = new Resend(resendApiKey);
+        
+        // Bruk miljøvariabel for mottakeradresse, eller fallback til post@aquaenergyai.com
+        const recipientEmail = process.env.CONTACT_EMAIL || 'remi_lie98@me.com';
+        
+        console.log('📤 Sender e-post til:', recipientEmail);
+        
+        const result = await resend.emails.send({
+          from: 'AquaEnergy AI <onboarding@resend.dev>', // Profesjonell avsenderadresse (kundene ser denne)
+          to: recipientEmail, // Sendes til din private e-post (skjult for kunder)
+          reply_to: email, // Når du svarer, går det til kundens e-post
+          subject: `Ny forespørsel fra ${company} - AquaEnergy AI`,
+          html: htmlContent,
+          text: textContent,
+        });
+        
+        console.log('✅ E-post sendt! ID:', result.data?.id);
+      } catch (emailError: any) {
+        console.error('❌ Feil ved sending av e-post:', emailError);
+        // Fortsett uansett - informasjonen er logget
+      }
+    } else {
+      console.log('⚠️ Demo mode: E-post ikke sendt. Legg til RESEND_API_KEY i Vercel.');
     }
 
-    // Logg alltid (også i demo mode)
-    console.log('📧 Ny kontaktskjema-forespørsel:', {
-      company,
-      contactPerson,
-      email,
-      phone,
-      facilityType,
-      comment,
-      timestamp: new Date().toISOString(),
-      mode: isDemoMode ? 'DEMO (ikke sendt - legg til RESEND_API_KEY)' : 'LIVE (sendt)',
-    });
+    // Logg alltid (også i demo mode) - dette vises i Vercel logs
+    console.log('📧 ========== NY KONTAKTSKJEMA-FORESPØRSEL ==========');
+    console.log('Firma:', company);
+    console.log('Kontaktperson:', contactPerson);
+    console.log('E-post:', email);
+    console.log('Telefon:', phone);
+    console.log('Type anlegg:', facilityType);
+    console.log('Kommentar:', comment || '(ingen kommentar)');
+    console.log('Tidspunkt:', new Date().toLocaleString('no-NO'));
+    console.log('Status:', isDemoMode ? 'DEMO (ikke sendt - legg til RESEND_API_KEY)' : 'LIVE (sendt)');
+    console.log('==================================================');
 
     return NextResponse.json({
       success: true,
