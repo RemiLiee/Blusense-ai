@@ -337,24 +337,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Book Demo Section */}
-      <section className="py-16 md:py-24 bg-primary-600">
+      {/* CTA Section */}
+      <section className="py-16 md:py-20 bg-primary-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Vi søker pilot kunder
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Klar til å starte?
           </h2>
           <p className="text-xl text-primary-100 mb-8">
-            Motta komplett installasjonspakke og dashboard klar til bruk.
+            Book en gratis pilot og se hvordan AquaEnergy AI kan optimalisere din oppdrettsanlegg
           </p>
-          <p className="text-lg text-white mb-8 font-semibold">
-            Perfekt mulighet for å teste løsningen i ditt anlegg.
-          </p>
-          <Link
-            href="#contact"
-            className="inline-block bg-white text-primary-600 px-10 py-5 rounded-lg font-bold hover:bg-gray-50 transition-colors text-lg shadow-xl"
-          >
-            Bli pilot kunde
-          </Link>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link
+              href="#contact"
+              className="bg-white text-primary-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-50 transition-colors text-lg shadow-lg"
+            >
+              Book gratis pilot
+            </Link>
+            <Link
+              href="/dashboard"
+              className="bg-transparent text-white px-8 py-4 rounded-lg font-semibold border-2 border-white hover:bg-white/10 transition-colors text-lg"
+            >
+              Se demo-dashboard
+            </Link>
+          </div>
         </div>
       </section>
 
