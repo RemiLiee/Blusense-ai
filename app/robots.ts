@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/dashboard/'],
       },
     ],
-    sitemap: 'https://aquaenergy.ai/sitemap.xml',
+    sitemap: 'https://aquaenergyai.com/sitemap.xml',
   }
 }
 
