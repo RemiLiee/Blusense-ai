@@ -46,42 +46,25 @@ export default function Home() {
       />
       
       {/* Hero Section - med bølgebilde */}
-      <section className="relative py-20 md:py-32 lg:py-40 overflow-hidden min-h-[70vh] w-full" style={{ position: 'relative', backgroundColor: 'transparent' }}>
-        <div 
-          className="absolute inset-0 w-full h-full"
+      <section className="relative py-20 md:py-32 lg:py-40 overflow-hidden min-h-[70vh] w-full">
+        <img
+          src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=1920"
+          alt="Akvakultur anlegg med bølger"
+          className="absolute inset-0 w-full h-full object-cover"
           style={{ 
-            zIndex: 0,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'transparent'
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'none',
+            opacity: 1,
+            zIndex: 0
           }}
-        >
-          <img
-            src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=1920"
-            alt="Akvakultur anlegg med bølger"
-            className="w-full h-full object-cover"
-            style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              zIndex: 0,
-              opacity: 1,
-              filter: 'brightness(1)'
-            }}
-          />
-        </div>
+        />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
               Ta kontroll over anlegget ditt – på 1, 2, 3
             </h1>
-            <p className="text-xl sm:text-2xl text-white/90 mb-10 max-w-3xl mx-auto font-medium leading-relaxed drop-shadow-lg">
+            <p className="text-xl sm:text-2xl text-white mb-10 max-w-3xl mx-auto font-medium leading-relaxed" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
               Sammen med anleggseier blir vi enige om tiltak og etter hvert som disse iverksettes, vises forbedringene i dashboardet. Slik får du som anleggseier full kontroll over anlegget og dets energibruk og drift. Resultatet er som regel betydelige energibesparelser.
             </p>
             <Link
