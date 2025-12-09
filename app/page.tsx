@@ -39,7 +39,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-white">
+    <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
