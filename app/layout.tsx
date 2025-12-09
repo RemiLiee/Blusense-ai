@@ -10,11 +10,11 @@ import Script from 'next/script';
 export const metadata: Metadata = {
   metadataBase: new URL('https://aquaenergyai.com'),
   title: {
-    default: "AquaEnergy AI — Energioptimalisering for oppdrett",
+    default: "AquaEnergy AI — AI-drevet energistyring",
     template: "%s | AquaEnergy AI"
   },
-  description: "Plug & Play sensorpakker + AI for energibesparelse. Sanntids overvåking og optimalisering for akvakulturanlegg. Reduser strømforbruk med 10-30%.",
-  keywords: ["akvakultur", "energibesparelse", "sensorovervåkning", "AI", "oppdrett", "energistyring", "fiskeoppdrett", "energioptimalisering", "IoT sensorer", "prediktivt vedlikehold"],
+  description: "Plug & Play sensorpakker + AI for energibesparelse. Sanntids overvåking og optimalisering for industrianlegg. Reduser strømforbruk med 10-30%.",
+  keywords: ["energibesparelse", "sensorovervåkning", "AI", "energistyring", "energioptimalisering", "IoT sensorer", "prediktivt vedlikehold", "pumpestyring", "industrianlegg", "energimåling"],
   authors: [{ name: "AquaEnergy AI" }],
   creator: "AquaEnergy AI",
   publisher: "AquaEnergy AI",
@@ -34,20 +34,20 @@ export const metadata: Metadata = {
     locale: "no_NO",
     url: "https://aquaenergyai.com",
     siteName: "AquaEnergy AI",
-    title: "AquaEnergy AI — Energioptimalisering for oppdrett",
-    description: "Plug & Play sensorpakker + AI for energibesparelse. Reduser strømforbruk med 10-30% i akvakulturanlegg.",
+    title: "AquaEnergy AI — AI-drevet energistyring",
+    description: "Plug & Play sensorpakker + AI for energibesparelse. Reduser strømforbruk med 10-30% i industrianlegg.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "AquaEnergy AI - Energioptimalisering for oppdrett",
+        alt: "AquaEnergy AI - AI-drevet energistyring",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AquaEnergy AI — Energioptimalisering for oppdrett",
+    title: "AquaEnergy AI — AI-drevet energistyring",
     description: "Plug & Play sensorpakker + AI for energibesparelse. Reduser strømforbruk med 10-30%.",
     images: ["/og-image.png"],
   },

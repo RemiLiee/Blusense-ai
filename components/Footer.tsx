@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">AquaEnergy AI</h3>
             <p className="text-gray-400 text-sm">
-              Plug & Play sensorpakker + AI for energibesparelse i akvakulturanlegg.
+              Plug & Play sensorpakker + AI for energibesparelse i industrianlegg.
             </p>
           </div>
           <div>

@@ -11,7 +11,7 @@ export default function Home() {
     "name": "AquaEnergy AI",
     "url": "https://aquaenergyai.com",
     "logo": "https://aquaenergyai.com/logo.png",
-    "description": "Plug & Play sensorpakker + AI for energibesparelse i akvakulturanlegg",
+    "description": "Plug & Play sensorpakker + AI for energibesparelse i industrianlegg",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+47-900-24-636",
@@ -49,7 +49,7 @@ export default function Home() {
       <section className="relative py-20 md:py-32 lg:py-40 overflow-hidden min-h-[70vh] w-full">
         <Image
           src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=1920"
-          alt="Akvakultur anlegg med bølger"
+          alt="Industrielt anlegg"
           fill
           className="object-cover"
           style={{ 
@@ -64,7 +64,7 @@ export default function Home() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-              AI-drevet energistyring for havbruk
+              AI-drevet energistyring
             </h1>
             <p className="text-xl sm:text-2xl text-white mb-10 max-w-3xl mx-auto font-medium leading-relaxed" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
               Sammen med anleggseier blir vi enige om tiltak og etter hvert som disse iverksettes, vises forbedringene i dashboardet. Slik får du som anleggseier full kontroll over anlegget og dets energibruk og drift. Resultatet er som regel betydelige energibesparelser.
@@ -202,7 +202,7 @@ export default function Home() {
               Startpakker
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Velg løsningen som passer best for din oppdrettsanlegg
+              Velg løsningen som passer best for ditt anlegg
             </p>
           </div>
           
@@ -211,7 +211,7 @@ export default function Home() {
             <div className="section-image relative h-80 group">
               <Image
                 src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=1920"
-                alt="Fiskeoppdrettsanlegg"
+                alt="Industrielt anlegg"
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
                 style={{ opacity: 1, filter: 'none' }}
@@ -226,7 +226,7 @@ export default function Home() {
             <div className="section-image relative h-80 group">
               <Image
                 src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1920"
-                alt="Fiskeoppdrettsanlegg nærbilde"
+                alt="Industrielt anlegg nærbilde"
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
                 style={{ opacity: 1, filter: 'none' }}
@@ -344,7 +344,7 @@ export default function Home() {
                   <svg className="w-6 h-6 text-green-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span className="text-gray-700">Støtter alle typer oppdrettsanlegg</span>
+                  <span className="text-gray-700">Støtter alle typer anlegg</span>
                 </li>
                 <li className="flex items-start">
                   <svg className="w-6 h-6 text-green-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -418,7 +418,7 @@ export default function Home() {
             Klar til å starte?
           </h2>
           <p className="text-xl text-primary-100 mb-8">
-            Book en gratis pilot og se hvordan AquaEnergy AI kan optimalisere din oppdrettsanlegg
+            Book en gratis pilot og se hvordan AquaEnergy AI kan optimalisere ditt anlegg
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
