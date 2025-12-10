@@ -64,10 +64,10 @@ export default function Home() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-              AI-drevet energistyring
+              Blusense AI — AI-drevet energistyring
             </h1>
             <p className="text-xl sm:text-2xl text-white mb-10 max-w-3xl mx-auto font-medium leading-relaxed" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
-              Sammen med anleggseier blir vi enige om tiltak og etter hvert som disse iverksettes, vises forbedringene i dashboardet. Slik får du som anleggseier full kontroll over anlegget og dets energibruk og drift. Resultatet er som regel betydelige energibesparelser.
+              Med Blusense AI blir vi sammen med anleggseier enige om tiltak og etter hvert som disse iverksettes, vises forbedringene i dashboardet. Blusense gir deg som anleggseier full kontroll over anlegget og dets energibruk og drift. Resultatet er som regel betydelige energibesparelser med Blusense AI.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link
@@ -115,7 +115,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Optimalisering og Kontroll</h3>
               <p className="text-gray-700 text-lg">
-                Våre sensorer identifiserer enkle tiltak som gir umiddelbar reduksjon i energiforbruket. Vi gir deg verktøyene for å ta data-drevne beslutninger og oppnå maksimal effektivitet i ditt anlegg.
+                Blusense sensorer identifiserer enkle tiltak som gir umiddelbar reduksjon i energiforbruket. Blusense AI gir deg verktøyene for å ta data-drevne beslutninger og oppnå maksimal effektivitet i ditt anlegg.
               </p>
             </div>
             <div className="text-center">
@@ -126,7 +126,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Selvkjørende Anlegg</h3>
               <p className="text-gray-700 text-lg">
-                Slutt på unødvendige kalendere og manuell styring – våre sensorer gir beslutningsgrunnlaget for å redusere energiforbruket ytterligere og gjøre anlegget selvstyrende.
+                Slutt på unødvendige kalendere og manuell styring – Blusense AI sensorer gir beslutningsgrunnlaget for å redusere energiforbruket ytterligere og gjøre anlegget selvstyrende med Blusense.
               </p>
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function Home() {
             <div className="section-image relative h-80 group">
               <Image
                 src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1920"
-                alt="Sensorpakke med dashboard og overvåking"
+                alt="Blusense AI sensorpakke med dashboard og overvåking"
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
                 style={{ opacity: 1, filter: 'none' }}

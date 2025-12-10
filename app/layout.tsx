@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s | Blusense AI"
   },
   description: "Plug & Play sensorpakker + AI for energibesparelse. Sanntids overvåking og optimalisering for industrianlegg. Reduser strømforbruk med 10-30%.",
-  keywords: ["energibesparelse", "sensorovervåkning", "AI", "energistyring", "energioptimalisering", "IoT sensorer", "prediktivt vedlikehold", "pumpestyring", "industrianlegg", "energimåling"],
+  keywords: ["blusense", "blusense ai", "energibesparelse", "sensorovervåkning", "AI", "energistyring", "energioptimalisering", "IoT sensorer", "prediktivt vedlikehold", "pumpestyring", "industrianlegg", "energimåling", "blusense energi", "blusense sensor"],
   authors: [{ name: "Blusense AI" }],
   creator: "Blusense AI",
   publisher: "Blusense AI",
