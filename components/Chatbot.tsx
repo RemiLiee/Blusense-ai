@@ -39,6 +39,7 @@ export default function Chatbot({ currentSensorData, recommendations = [], histo
       showAutomaticOverview();
       setHasShownInitialOverview(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, currentSensorData, hasShownInitialOverview]);
 
   // Check for anomalies and recommendations automatically
@@ -47,6 +48,7 @@ export default function Chatbot({ currentSensorData, recommendations = [], histo
       checkAndShowAnomalies();
       checkAndShowRecommendations();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, currentSensorData, recommendations]);
 
   const showAutomaticOverview = () => {
@@ -282,7 +284,7 @@ export default function Chatbot({ currentSensorData, recommendations = [], histo
             steps = `1. Planlegg vedlikehold i nærmeste vedlikeholdsperiode\n2. Kontroller pumper og filtreringssystem\n3. Rengjør eller bytt filtre hvis nødvendig\n4. Test systemet etter vedlikehold\n5. Overvåk energiforbruket for forbedringer`;
           }
 
-          return `Her er en steg-for-steg guide for å implementere "${rec.title}":\n\n${steps}\n\n**Tips:**\n- Gjør justeringer gradvis for å unngå sjokk\n- Overvåk alle parametere i dashboardet under implementering\n- Hvis noe ser ut til å gå feil, justér tilbake til forrige innstilling\n- Dokumenter endringene dine for fremtidig referanse\n\nHar du spørsmål om noen av stegene?`;
+          return `Her er en steg-for-steg guide for å implementere &ldquo;${rec.title}&rdquo;:\n\n${steps}\n\n**Tips:**\n- Gjør justeringer gradvis for å unngå sjokk\n- Overvåk alle parametere i dashboardet under implementering\n- Hvis noe ser ut til å gå feil, justér tilbake til forrige innstilling\n- Dokumenter endringene dine for fremtidig referanse\n\nHar du spørsmål om noen av stegene?`;
         }
       }
 
@@ -311,7 +313,7 @@ export default function Chatbot({ currentSensorData, recommendations = [], histo
     }
 
     // Default response
-    return `Jeg forstår at du spør om "${userMessage}". For å gi deg best mulig hjelp, kan du spørre meg om:\n\n- Dine sensordata (energi, vannstrøm, oksygen, temperatur)\n- Anbefalinger og hvordan du implementerer dem\n- Status og oversikt over anlegget ditt\n- Energibesparelse og optimalisering\n\nEller si "hjelp" for å se alle mine funksjoner!`;
+    return `Jeg forstår at du spør om &ldquo;${userMessage}&rdquo;. For å gi deg best mulig hjelp, kan du spørre meg om:\n\n- Dine sensordata (energi, vannstrøm, oksygen, temperatur)\n- Anbefalinger og hvordan du implementerer dem\n- Status og oversikt over anlegget ditt\n- Energibesparelse og optimalisering\n\nEller si &ldquo;hjelp&rdquo; for å se alle mine funksjoner!`;
   };
 
   const handleSend = async () => {
@@ -450,7 +452,7 @@ export default function Chatbot({ currentSensorData, recommendations = [], histo
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              💡 Prøv: "Hvordan går det med energiforbruket?" eller "Forklar anbefalingene"
+              💡 Prøv: &ldquo;Hvordan går det med energiforbruket?&rdquo; eller &ldquo;Forklar anbefalingene&rdquo;
             </p>
           </div>
         </div>
