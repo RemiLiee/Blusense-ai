@@ -6,6 +6,8 @@ export interface SensorData {
   flow: number; // L/min
   oxygen: number; // mg/L
   temperature: number; // °C
+  vibration?: number; // mm/s
+  efficiency?: number; // %
 }
 
 export interface Alert {
@@ -22,6 +24,8 @@ class SensorSimulator {
   private baseFlow = 35; // Higher than optimal (30) to trigger recommendations
   private baseOxygen = 95; // Higher than optimal (90) to show savings potential
   private baseTemperature = 12.5; // Slightly higher than optimal (11)
+  private baseVibration = 8.5; // Higher than optimal (< 7) to trigger maintenance recommendations
+  private baseEfficiency = 72; // Lower than optimal (> 80) to show efficiency issues
 
   private generateRandomValue(base: number, variance: number): number {
     return base + (Math.random() - 0.5) * variance;
@@ -34,6 +38,8 @@ class SensorSimulator {
       flow: Math.max(0, this.generateRandomValue(this.baseFlow, 15)),
       oxygen: Math.max(0, this.generateRandomValue(this.baseOxygen, 0.8)),
       temperature: this.generateRandomValue(this.baseTemperature, 1.5),
+      vibration: Math.max(0, this.generateRandomValue(this.baseVibration, 2.5)),
+      efficiency: Math.max(0, Math.min(100, this.generateRandomValue(this.baseEfficiency, 8))),
     };
   }
 
@@ -54,6 +60,8 @@ class SensorSimulator {
         flow: Math.max(0, this.baseFlow + timeVariation * 10 + (Math.random() - 0.5) * 10),
         oxygen: Math.max(0, this.baseOxygen + timeVariation * 0.2 + (Math.random() - 0.5) * 0.5),
         temperature: this.baseTemperature + timeVariation * 0.5 + (Math.random() - 0.5) * 1,
+        vibration: Math.max(0, this.baseVibration + timeVariation * 0.5 + (Math.random() - 0.5) * 2),
+        efficiency: Math.max(0, Math.min(100, this.baseEfficiency + timeVariation * 2 + (Math.random() - 0.5) * 5)),
       });
     }
 
@@ -136,6 +144,44 @@ class SensorSimulator {
         message: `Lav temperatur: ${data.temperature.toFixed(1)}°C`,
         timestamp: data.timestamp,
         sensor: 'temperature',
+      });
+    }
+
+    // Vibration alerts
+    if (data.vibration && data.vibration > 10) {
+      alerts.push({
+        id: `vibration-${data.timestamp}`,
+        type: 'error',
+        message: `Kritisk høy vibrasjon: ${data.vibration.toFixed(1)} mm/s (anbefalt < 7 mm/s)`,
+        timestamp: data.timestamp,
+        sensor: 'energy',
+      });
+    } else if (data.vibration && data.vibration > 7) {
+      alerts.push({
+        id: `vibration-${data.timestamp}`,
+        type: 'warning',
+        message: `Høy vibrasjon: ${data.vibration.toFixed(1)} mm/s (anbefalt < 7 mm/s)`,
+        timestamp: data.timestamp,
+        sensor: 'energy',
+      });
+    }
+
+    // Efficiency alerts
+    if (data.efficiency && data.efficiency < 70) {
+      alerts.push({
+        id: `efficiency-${data.timestamp}`,
+        type: 'error',
+        message: `Lav effektivitet: ${data.efficiency.toFixed(1)}% (anbefalt > 80%)`,
+        timestamp: data.timestamp,
+        sensor: 'energy',
+      });
+    } else if (data.efficiency && data.efficiency < 75) {
+      alerts.push({
+        id: `efficiency-${data.timestamp}`,
+        type: 'warning',
+        message: `Moderat effektivitet: ${data.efficiency.toFixed(1)}% (anbefalt > 80%)`,
+        timestamp: data.timestamp,
+        sensor: 'energy',
       });
     }
 

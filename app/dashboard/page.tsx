@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Graph from '@/components/Graph';
 import Alerts from '@/components/Alerts';
 import OptimizationPanel from '@/components/OptimizationPanel';
+import VibrationGraph from '@/components/VibrationGraph';
 import { sensorSimulator, SensorData, Alert } from '@/lib/sensorSimulator';
 import { OptimizationRecommendation } from '@/lib/optimization';
 import Chatbot from '@/components/Chatbot';
@@ -199,6 +200,152 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Avvik og Anbefalinger - Automatisk vist */}
+        {optimizationData?.recommendations && optimizationData.recommendations.length > 0 && (
+          <div className="mb-8 bg-white rounded-xl shadow-lg p-6 border-2 border-primary-200">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">🚨 Avvik Detektert & Anbefalinger</h2>
+                <p className="text-gray-600">Automatiske anbefalinger basert på nåværende sensordata</p>
+              </div>
+              <div className="bg-red-100 text-red-800 px-4 py-2 rounded-lg font-semibold">
+                {optimizationData.recommendations.length} {optimizationData.recommendations.length === 1 ? 'anbefaling' : 'anbefalinger'}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {optimizationData.recommendations.map((rec: OptimizationRecommendation) => {
+                // Calculate yearly savings from monthly estimate
+                const monthlyMatch = rec.estimatedImpact.match(/(\d+(?:\s?\d+)?)\s*kr\/mnd/);
+                const monthlySavings = monthlyMatch ? parseInt(monthlyMatch[1].replace(/\s/g, '')) : 0;
+                const yearlySavings = monthlySavings * 12;
+                const savingsPercentage = rec.potentialSavings || 0;
+
+                return (
+                  <div
+                    key={rec.id}
+                    className={`border-2 rounded-xl p-6 ${
+                      rec.priority === 'high'
+                        ? 'border-red-300 bg-red-50'
+                        : rec.priority === 'medium'
+                        ? 'border-yellow-300 bg-yellow-50'
+                        : 'border-blue-300 bg-blue-50'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-xl font-bold text-gray-900">{rec.title}</h3>
+                          <span
+                            className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                              rec.priority === 'high'
+                                ? 'bg-red-200 text-red-800'
+                                : rec.priority === 'medium'
+                                ? 'bg-yellow-200 text-yellow-800'
+                                : 'bg-blue-200 text-blue-800'
+                            }`}
+                          >
+                            {rec.priority === 'high' ? '🔴 Høy prioritet' : rec.priority === 'medium' ? '🟡 Middels' : '🔵 Lav'}
+                          </span>
+                        </div>
+                        <p className="text-gray-700 mb-3">{rec.description}</p>
+                      </div>
+                    </div>
+
+                    {/* Besparelser og investering */}
+                    <div className="bg-white rounded-lg p-4 mb-3 border border-gray-200">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                          <div className="text-xs text-gray-600 mb-1">Potensiell reduksjon</div>
+                          <div className="text-2xl font-bold text-green-600">{savingsPercentage}%</div>
+                        </div>
+                        {rec.savingsKWhPerYear && (
+                          <div>
+                            <div className="text-xs text-gray-600 mb-1">Besparelse (kWh/år)</div>
+                            <div className="text-2xl font-bold text-green-600">{Math.round(rec.savingsKWhPerYear).toLocaleString('no-NO')} kWh</div>
+                          </div>
+                        )}
+                        {rec.savingsAmountPerYear && (
+                          <div>
+                            <div className="text-xs text-gray-600 mb-1">Besparelse (kr/år)</div>
+                            <div className="text-2xl font-bold text-green-600">{Math.round(rec.savingsAmountPerYear).toLocaleString('no-NO')} kr</div>
+                          </div>
+                        )}
+                        {rec.investmentCost && (
+                          <div>
+                            <div className="text-xs text-gray-600 mb-1">Investeringskostnad</div>
+                            <div className="text-2xl font-bold text-blue-600">{Math.round(rec.investmentCost).toLocaleString('no-NO')} kr</div>
+                          </div>
+                        )}
+                      </div>
+                      {rec.paybackMonths && rec.paybackMonths > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <div className="text-xs text-gray-600">Tilbakebetalingstid</div>
+                            <div className="text-lg font-bold text-gray-900">
+                              {rec.paybackMonths < 12 
+                                ? `${Math.round(rec.paybackMonths)} måneder`
+                                : `${Math.round(rec.paybackMonths / 12 * 10) / 10} år`
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {rec.issue && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <div className="text-xs font-semibold text-gray-700 mb-1">Detektert avvik:</div>
+                          <div className="text-sm text-gray-900">{rec.issue}</div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Anbefalt handling */}
+                    <div className="bg-white/80 rounded-lg p-3 mb-3 border border-gray-200">
+                      <div className="text-sm font-semibold text-gray-700 mb-1">📋 Anbefalt tiltak:</div>
+                      <div className="text-base text-gray-900">{rec.action}</div>
+                    </div>
+
+                    {/* Implementer knapp */}
+                    {!implementedActions.some(a => a.recommendationId === rec.id) && (
+                      <button
+                        onClick={() => handleImplementAction(rec)}
+                        className="w-full bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-lg"
+                      >
+                        ✅ Marker som implementert
+                      </button>
+                    )}
+                    {implementedActions.some(a => a.recommendationId === rec.id) && (
+                      <div className="w-full bg-green-100 text-green-800 px-6 py-3 rounded-lg font-semibold text-center border-2 border-green-300">
+                        ✓ Tiltak er implementert
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Total potensiell besparelse */}
+            {optimizationData.recommendations.length > 0 && (
+              <div className="mt-6 bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-6 border-2 border-green-300">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">Total Potensiell Besparelse</h3>
+                    <p className="text-gray-600 text-sm">Hvis alle anbefalinger implementeres</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-4xl font-bold text-green-700">
+                      {optimizationData.analysis?.savingsAmount 
+                        ? (optimizationData.analysis.savingsAmount * 12).toLocaleString('no-NO')
+                        : '0'} kr
+                    </div>
+                    <div className="text-sm text-gray-600">per år</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Left Column - Current Stats & Graphs */}
@@ -206,7 +353,7 @@ export default function Dashboard() {
             {/* Current Sensor Readings */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Sanntids Målinger</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
                   <div className="text-sm text-gray-600 mb-1">Energi</div>
                   <div className="text-2xl font-bold text-blue-700">{currentData.energy.toFixed(2)} kWh</div>
@@ -227,13 +374,59 @@ export default function Dashboard() {
                   <div className="text-2xl font-bold text-orange-700">{currentData.temperature.toFixed(1)}°C</div>
                   <div className="text-xs text-gray-500 mt-1">Nåværende</div>
                 </div>
+                {currentData.vibration !== undefined && (
+                  <div className={`rounded-lg p-4 border ${
+                    currentData.vibration > 10 
+                      ? 'bg-red-50 border-red-200' 
+                      : currentData.vibration > 7 
+                      ? 'bg-yellow-50 border-yellow-200' 
+                      : 'bg-green-50 border-green-200'
+                  }`}>
+                    <div className="text-sm text-gray-600 mb-1">Vibrasjon</div>
+                    <div className={`text-2xl font-bold ${
+                      currentData.vibration > 10 
+                        ? 'text-red-700' 
+                        : currentData.vibration > 7 
+                        ? 'text-yellow-700' 
+                        : 'text-green-700'
+                    }`}>
+                      {currentData.vibration.toFixed(1)} mm/s
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {currentData.vibration > 10 ? 'Kritisk' : currentData.vibration > 7 ? 'Høy' : 'Normal'}
+                    </div>
+                  </div>
+                )}
+                {currentData.efficiency !== undefined && (
+                  <div className={`rounded-lg p-4 border ${
+                    currentData.efficiency < 70 
+                      ? 'bg-red-50 border-red-200' 
+                      : currentData.efficiency < 75 
+                      ? 'bg-yellow-50 border-yellow-200' 
+                      : 'bg-green-50 border-green-200'
+                  }`}>
+                    <div className="text-sm text-gray-600 mb-1">Effektivitet</div>
+                    <div className={`text-2xl font-bold ${
+                      currentData.efficiency < 70 
+                        ? 'text-red-700' 
+                        : currentData.efficiency < 75 
+                        ? 'text-yellow-700' 
+                        : 'text-green-700'
+                    }`}>
+                      {currentData.efficiency.toFixed(1)}%
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {currentData.efficiency < 70 ? 'Lav' : currentData.efficiency < 75 ? 'Moderat' : 'God'}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Graphs */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Graph
-                title="Energiforbruk"
+                title="Energiforbruk (siste 24 timer)"
                 data={historicalData}
                 dataKey="energy"
                 unit="kWh"
@@ -260,6 +453,23 @@ export default function Dashboard() {
                 unit="°C"
                 color="orange"
               />
+              {currentData.vibration !== undefined && (
+                <VibrationGraph
+                  title="Vibrasjon (siste 24 timer)"
+                  data={historicalData.filter(d => d.vibration !== undefined)}
+                  dataKey="vibration"
+                  unit="mm/s"
+                />
+              )}
+              {currentData.efficiency !== undefined && (
+                <Graph
+                  title="Effektivitet"
+                  data={historicalData.filter(d => d.efficiency !== undefined)}
+                  dataKey="efficiency"
+                  unit="%"
+                  color="green"
+                />
+              )}
             </div>
 
             {/* Alerts */}

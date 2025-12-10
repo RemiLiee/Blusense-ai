@@ -129,14 +129,19 @@ export default function Chatbot({ currentSensorData, recommendations = [], histo
 
     // Show top 3 recommendations automatically
     const topRecommendations = recommendations.slice(0, 3);
-    const recsText = topRecommendations.map((rec, idx) => 
-      `${idx + 1}. **${rec.title}**\n   ${rec.description}\n   💰 Potensiell besparelse: ${rec.potentialSavings}% | ${rec.estimatedImpact}\n   📋 Anbefalt: ${rec.action}`
-    ).join('\n\n');
+    const recsText = topRecommendations.map((rec, idx) => {
+      // Calculate yearly savings from monthly estimate
+      const monthlyMatch = rec.estimatedImpact.match(/(\d+(?:\s?\d+)?)\s*kr\/mnd/);
+      const monthlySavings = monthlyMatch ? parseInt(monthlyMatch[1].replace(/\s/g, '')) : 0;
+      const yearlySavings = monthlySavings * 12;
+      
+      return `${idx + 1}. **${rec.title}**\n   ${rec.description}\n   💰 Potensiell besparelse: ${rec.potentialSavings}%\n   📅 Månedlig: ${rec.estimatedImpact}\n   📅 Årlig: ${yearlySavings > 0 ? yearlySavings.toLocaleString('no-NO') + ' kr' : 'Se månedlig estimat'}\n   📋 Anbefalt tiltak: ${rec.action}`;
+    }).join('\n\n');
 
     const recommendationMessage: Message = {
       id: `recommendations-${Date.now()}`,
       role: 'assistant',
-      content: `💡 **Anbefalinger for å spare strøm:**\n\n${recsText}\n\n${recommendations.length > 3 ? `\n+ ${recommendations.length - 3} flere anbefalinger tilgjengelig. Spør meg for mer info!` : ''}`,
+      content: `💡 **Anbefalinger for å spare strøm (basert på avvik):**\n\n${recsText}\n\n${recommendations.length > 3 ? `\n+ ${recommendations.length - 3} flere anbefalinger tilgjengelig i dashboardet!` : ''}`,
       timestamp: Date.now(),
       dataContext: { recommendations: topRecommendations },
     };
