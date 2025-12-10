@@ -104,7 +104,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Kartlegging og Datainnsamling</h3>
               <p className="text-gray-700 text-lg">
-                Vi bruker den nyeste sensorteknologien for å kartlegge og samle inn data om de viktigste komponentene i ditt anlegg: energi, vannstrøm, oksygen og temperatur.
+                Blusense AI bruker den nyeste sensorteknologien for å kartlegge og samle inn data om de viktigste komponentene i ditt anlegg: energi, vannstrøm, oksygen og temperatur.
               </p>
             </div>
             <div className="text-center">
