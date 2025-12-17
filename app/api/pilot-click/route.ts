@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: NextRequest) {
   try {
     // Check if API key is set
@@ -17,6 +15,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const body = await request.json();
     const { source, userAgent, referer } = body;
@@ -54,13 +54,13 @@ AquaEnergy AI
     console.log('Pilot click notification sent:', emailResult);
     console.log('Email result data:', JSON.stringify(emailResult, null, 2));
 
-    if (emailResult.error) {
+    if ('error' in emailResult && emailResult.error) {
       console.error('Resend API error:', emailResult.error);
       return NextResponse.json(
         { 
           success: false, 
           error: 'Failed to send email',
-          details: emailResult.error.message || 'Unknown Resend API error'
+          details: (emailResult.error as any).message || 'Unknown Resend API error'
         },
         { status: 500 }
       );
@@ -69,7 +69,7 @@ AquaEnergy AI
     return NextResponse.json({ 
       success: true, 
       message: 'Notification sent',
-      emailId: emailResult.data?.id 
+      emailId: 'data' in emailResult ? (emailResult.data as any)?.id : undefined
     });
   } catch (error) {
     console.error('Error sending pilot click notification:', error);
