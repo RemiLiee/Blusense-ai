@@ -27,10 +27,18 @@ export default function ContactForm() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        throw new Error(text || 'Noe gikk galt');
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Noe gikk galt');
+        console.error('Contact form error:', data);
+        throw new Error(data.error || data.details || 'Noe gikk galt');
       }
 
       setSubmitted(true);
