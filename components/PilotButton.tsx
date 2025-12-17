@@ -31,12 +31,17 @@ export default function PilotButton({ href, className, children, source = 'Unkno
         }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Failed to send pilot click notification. Status:', response.status, 'Response:', errorText);
-      } else {
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
-        console.log('Pilot click notification sent successfully:', data);
+        if (!response.ok) {
+          console.error('Failed to send pilot click notification. Status:', response.status, 'Response:', data);
+        } else {
+          console.log('Pilot click notification sent successfully:', data);
+        }
+      } else {
+        const text = await response.text();
+        console.error('Failed to send pilot click notification. Status:', response.status, 'Response:', text);
       }
     } catch (error) {
       console.error('Failed to send pilot click notification:', error);
