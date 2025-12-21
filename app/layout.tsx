@@ -69,42 +69,46 @@ export default function RootLayout({
     <html lang="no">
       <body className="min-h-screen flex flex-col">
         {/* Google Analytics - Consent Mode */}
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <>
-            <Script
-              id="google-analytics-consent"
-              strategy="beforeInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('consent', 'default', {
-                    'analytics_storage': 'denied',
-                    'ad_storage': 'denied'
-                  });
-                `,
-              }}
-            />
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID.trim()}`}
-              strategy="afterInteractive"
-            />
-            <Script
-              id="google-analytics"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID.trim()}', {
-                    'anonymize_ip': true
-                  });
-                `,
-              }}
-            />
-          </>
-        )}
+        {process.env.NEXT_PUBLIC_GA_ID && (() => {
+          const gaId = process.env.NEXT_PUBLIC_GA_ID.replace(/\r|\n|\t/g, '').trim();
+          if (!gaId) return null;
+          return (
+            <>
+              <Script
+                id="google-analytics-consent"
+                strategy="beforeInteractive"
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('consent', 'default', {
+                      'analytics_storage': 'denied',
+                      'ad_storage': 'denied'
+                    });
+                  `,
+                }}
+              />
+              <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+                strategy="afterInteractive"
+              />
+              <Script
+                id="google-analytics"
+                strategy="afterInteractive"
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', '${gaId}', {
+                      'anonymize_ip': true
+                    });
+                  `,
+                }}
+              />
+            </>
+          );
+        })()}
         <Header />
         <main className="flex-grow">{children}</main>
         <Footer />
