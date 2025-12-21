@@ -20,10 +20,13 @@ export default function Graph({ title, data, dataKey, unit, color = 'primary' }:
     );
   }
 
-  const values = data.map(d => d[dataKey] as number);
+  const values = data.map(d => (d[dataKey] as number) || 0);
+  if (values.length === 0) return null;
+
   const max = Math.max(...values);
   const min = Math.min(...values);
   const range = max - min || 1;
+  const currentValue = values[values.length - 1];
 
   const colorClasses = {
     primary: 'bg-primary-500',
@@ -33,8 +36,6 @@ export default function Graph({ title, data, dataKey, unit, color = 'primary' }:
     red: 'bg-red-500',
   };
 
-  const currentValue = values[values.length - 1];
-
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-4">
@@ -43,15 +44,14 @@ export default function Graph({ title, data, dataKey, unit, color = 'primary' }:
           {currentValue.toFixed(dataKey === 'temperature' ? 1 : 2)} {unit}
         </div>
       </div>
-      <div className="h-48 flex items-end space-x-1 bg-gray-100 rounded p-1">
+      <div className="h-48 flex items-end space-x-1">
         {values.map((value, index) => {
           const height = ((value - min) / range) * 100;
-          const barHeight = Math.max(height, 5);
           return (
             <div
               key={index}
-              className={`flex-1 ${colorClasses[color as keyof typeof colorClasses] || colorClasses.primary} rounded-t opacity-80 hover:opacity-100 transition-opacity`}
-              style={{ height: `${barHeight}%`, minHeight: '4px' }}
+              className={`flex-1 ${colorClasses[color as keyof typeof colorClasses] || colorClasses.primary} rounded-t opacity-70 hover:opacity-100 transition-opacity`}
+              style={{ height: `${Math.max(height, 5)}%` }}
               title={`${value.toFixed(2)} ${unit}`}
             />
           );
