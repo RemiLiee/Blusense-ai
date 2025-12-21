@@ -43,15 +43,20 @@ export default function Graph({ title, data, dataKey, unit, color = 'primary' }:
           {currentValue.toFixed(dataKey === 'temperature' ? 1 : 2)} {unit}
         </div>
       </div>
-      <div className="h-48 flex items-end space-x-1">
+      <div className="h-48 flex items-end justify-between gap-1 bg-gray-50 rounded p-2">
         {values.map((value, index) => {
           const height = ((value - min) / range) * 100;
+          const minHeight = 3; // Minimum height in pixels to ensure visibility
+          const heightPercent = Math.max(height, minHeight);
           return (
             <div
               key={index}
-              className={`flex-1 ${colorClasses[color as keyof typeof colorClasses] || colorClasses.primary} rounded-t opacity-70 hover:opacity-100 transition-opacity`}
-              style={{ height: `${Math.max(height, 5)}%` }}
-              title={`${value.toFixed(2)} ${unit}`}
+              className={`flex-1 min-w-[2px] ${colorClasses[color as keyof typeof colorClasses] || colorClasses.primary} rounded-t opacity-80 hover:opacity-100 transition-opacity`}
+              style={{ 
+                height: `${heightPercent}%`,
+                minHeight: `${minHeight}px`
+              }}
+              title={`${value.toFixed(2)} ${unit} (${new Date(data[index]?.timestamp || 0).toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' })})`}
             />
           );
         })}
