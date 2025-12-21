@@ -37,18 +37,21 @@ export async function POST(request: NextRequest) {
     const emailContent = `
 Hei Remi!
 
-Noen har fylt ut kontaktskjemaet på AquaEnergy AI nettsiden.
+🎯 NY REGISTRERING / PILOT-FORESØRSEL
+
+Noen har fylt ut kontaktskjemaet (pilot-registrering) på AquaEnergy AI nettsiden.
 
 Kontaktinformasjon:
 - Navn: ${name}
 - E-post: ${email}
 - Bedrift: ${company || 'Ikke oppgitt'}
-- Tidspunkt: ${new Date().toLocaleString('no-NO', { timeZone: 'Europe/Oslo' })}
+- Registrert: ${new Date().toLocaleString('no-NO', { timeZone: 'Europe/Oslo' })}
 
-Melding:
+Melding/Forespørsel:
 ${message}
 
 ---
+Du kan svare direkte på denne e-posten for å kontakte ${name}.
 AquaEnergy AI
     `.trim();
 
@@ -56,7 +59,7 @@ AquaEnergy AI
       from: 'AquaEnergy AI <onboarding@resend.dev>',
       to: contactEmail,
       reply_to: email, // Så du kan svare direkte til personen
-      subject: `📧 Ny kontakt fra ${name}${company ? ` (${company})` : ''}`,
+      subject: `🎯 Ny registrering/pilot-forespørsel fra ${name}${company ? ` (${company})` : ''}`,
       text: emailContent,
     });
 
