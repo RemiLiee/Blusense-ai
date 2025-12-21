@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { SensorData } from '@/lib/sensorSimulator';
 import { OptimizationRecommendation } from '@/lib/optimization';
+import { analyzeMotor, analyzePump, calculateEconomicImpact } from '@/lib/industrialRules';
 
 interface Message {
   id: string;
@@ -257,11 +258,57 @@ export default function Chatbot({ currentSensorData, recommendations = [], histo
         return `Din temperatur er ${currentSensorData.temperature.toFixed(1)}°C, som er innenfor optimalt område. Utmerket!`;
       }
 
-      // Questions about recommendations
-      if (lowerMessage.includes('anbefal') || lowerMessage.includes('tiltak') || lowerMessage.includes('hva skal jeg')) {
+      // Questions about recommendations - NYTT FORMAT: Hva vi ser, Hva det betyr, Konsekvens, Anbefalte tiltak
+      if (lowerMessage.includes('anbefal') || lowerMessage.includes('tiltak') || lowerMessage.includes('hva skal jeg') || lowerMessage.includes('forklar')) {
         if (recommendations.length > 0) {
           const topRec = recommendations[0];
-          return `Basert på dine sensordata har jeg ${recommendations.length} anbefaling(er). Den viktigste er:\n\n**${topRec.title}**\n\n${topRec.description}\n\n**Anbefalt handling:** ${topRec.action}\n\n**Potensiell besparelse:** ${topRec.potentialSavings}% | ${topRec.estimatedImpact}\n\n${topRec.type === 'energy' ? 'Dette tiltaket fokuserer på å redusere energiforbruket ved å optimalisere pumpe- og ventilasjonssystemer.' : topRec.type === 'flow' ? 'Dette tiltaket fokuserer på å optimalisere vannstrømmen for bedre effektivitet.' : topRec.type === 'oxygen' ? 'Dette tiltaket fokuserer på å optimalisere oksygennivået for å redusere unødvendig aerasjon.' : 'Dette tiltaket fokuserer på vedlikehold for å forhindre økt energiforbruk.'}\n\nVil du at jeg skal forklare hvordan du implementerer dette tiltaket?`;
+          
+          // Beregn økonomiske konsekvenser
+          const avgEnergy = historicalData.length > 0 
+            ? historicalData.reduce((sum, d) => sum + d.energy, 0) / historicalData.length 
+            : currentSensorData.energy;
+          const extraPower = (topRec.potentialSavings / 100) * avgEnergy;
+          const economic = calculateEconomicImpact(extraPower, 16, 1.25);
+          
+          // Bygg svar i nytt format
+          let response = `**${topRec.title}**\n\n`;
+          
+          // 1. Hva vi ser
+          response += `**1. Hva vi ser:**\n`;
+          if (topRec.issue) {
+            response += `${topRec.issue}\n\n`;
+          } else {
+            response += `${topRec.description}\n\n`;
+          }
+          
+          // 2. Hva det betyr
+          response += `**2. Hva det betyr:**\n`;
+          if (topRec.type === 'vibration') {
+            response += `Dette tyder på mekanisk slitasje eller feiljustering i pumpe- eller motordrift. Høy vibrasjon indikerer at utstyret jobber under suboptimale forhold, noe som øker energiforbruket og risikoen for uplanlagt stans.\n\n`;
+          } else if (topRec.type === 'energy') {
+            response += `Dette tyder på at utstyret bruker mer energi enn nødvendig. Dette kan skyldes overbelastning, ineffektiv drift, eller at driftspunktet ikke er optimalt justert.\n\n`;
+          } else if (topRec.type === 'flow') {
+            response += `Dette tyder på at pumpen jobber mot økt motstand i systemet. Dette kan skyldes tette filter, ventiler som ikke er optimalt justert, eller blokkeringer i rørledninger.\n\n`;
+          } else {
+            response += `${topRec.description}\n\n`;
+          }
+          
+          // 3. Konsekvens (energi / kroner / risiko)
+          response += `**3. Konsekvens:**\n`;
+          response += `**Energi:** Dersom dette vedvarer, kan det gi ekstra energiforbruk på ca. ${extraPower.toFixed(1)}–${(extraPower * 1.2).toFixed(1)} kW over tid.\n\n`;
+          response += `**Kroner:** Basert på konservativ vurdering kan dette gi en merkostnad på rundt ${economic.extra_cost_nok_year} kr per år dersom situasjonen vedvarer.\n\n`;
+          response += `**Risiko:** Økt slitasje på utstyr kan føre til uplanlagt vedlikehold og potensielt produksjonstap.\n\n`;
+          
+          // 4. Anbefalte tiltak
+          response += `**4. Anbefalte tiltak:**\n`;
+          const actions = topRec.action.split('.').filter(a => a.trim()).map(a => a.trim());
+          actions.forEach((action, idx) => {
+            response += `${idx + 1}. ${action}\n`;
+          });
+          
+          response += `\n*Merk: Dette er anbefalinger basert på sensordataene. Vurder sammen med din faglige kompetanse før implementering.*`;
+          
+          return response;
         }
         return `Basert på dine nåværende sensordata ser alt ut til å kjøre ganske optimalt! Ditt energiforbruk er ${currentSensorData.energy.toFixed(1)} kWh, som er innenfor normal område. Fortsett med god overvåking!`;
       }
@@ -306,11 +353,11 @@ export default function Chatbot({ currentSensorData, recommendations = [], histo
 
     // General questions
     if (lowerMessage.includes('hei') || lowerMessage.includes('hallo')) {
-      return `Hei! Jeg er AquaEnergy AI-assistenten. Jeg kan hjelpe deg med:\n\n✅ Forstå sensordataene dine\n✅ Forklare anbefalinger\n✅ Gi råd om energibesparelse\n✅ Hjelpe med implementering av tiltak\n\nHva vil du vite mer om?`;
+      return `Hei! Jeg er AquaEnergy AI – din industrielle energi- og driftsrådgiver for elektromotorer, pumper og prosessutstyr.\n\nJeg kan hjelpe deg med:\n✅ Forstå hvorfor tiltak er foreslått\n✅ Forklare konsekvens i energi, kroner og drift\n✅ Utdype anbefalte tiltak i praktiske ord\n✅ Analysere sensordataene dine\n\nJeg gir aldri ordre, kun anbefalinger basert på faglig vurdering. Hva vil du vite mer om?`;
     }
 
     if (lowerMessage.includes('hjelp') || lowerMessage.includes('hva kan du')) {
-      return `Jeg kan hjelpe deg med:\n\n📊 **Sensordata:**\n- Forklare hva målingene betyr\n- Analysere trender og mønstre\n- Identifisere unormale verdier\n\n💡 **Anbefalinger:**\n- Forklare hvorfor anbefalinger er gitt\n- Gi steg-for-steg instruksjoner\n- Estimere potensielle besparelser\n\n⚙️ **Implementering:**\n- Guide deg gjennom tiltak\n- Hjelpe med justeringer\n- Overvåke resultater\n\nPrøv å spørre om energiforbruk, vannstrøm, oksygen, temperatur, eller anbefalinger!`;
+      return `Jeg er AquaEnergy AI – en industriell energi- og driftsrådgiver for elektromotorer, pumper og prosessutstyr.\n\nJeg kan hjelpe deg med:\n\n📊 **Analysere sensordata:**\n- Forklare hva avvikene betyr\n- Identifisere trender og mønstre\n- Vurdere utstyr basert på industriregler\n\n💡 **Forklare tiltak:**\n- Forklare hvorfor tiltak er foreslått\n- Utdype konsekvenser i energi, kroner og drift\n- Gi praktiske anbefalinger (aldri ordre)\n\n⚙️ **Driftsrådgivning:**\n- Konservativ vurdering basert på faglige prinsipper\n- Fokus på elektromotorer, pumper og prosessutstyr\n- Anbefalinger som støtter din beslutning\n\n**Merk:** Jeg gir kun anbefalinger, ikke ordre. Du har alltid den endelige beslutningen basert på din faglige kompetanse.\n\nPrøv å spørre: "Forklar dette tiltaket" eller spør om spesifikke sensorverdier!`;
     }
 
     if (lowerMessage.includes('besparelse') || lowerMessage.includes('spare')) {
