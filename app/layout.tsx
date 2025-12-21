@@ -69,45 +69,68 @@ export default function RootLayout({
     <html lang="no">
       <body className="min-h-screen flex flex-col">
         {/* Google Analytics - Consent Mode */}
-        {process.env.NEXT_PUBLIC_GA_ID && (() => {
-          const gaId = process.env.NEXT_PUBLIC_GA_ID.replace(/\r|\n|\t/g, '').trim();
-          if (!gaId) return null;
-          return (
-            <>
-              <Script
-                id="google-analytics-consent"
-                strategy="beforeInteractive"
-                dangerouslySetInnerHTML={{
-                  __html: `
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag('consent', 'default', {
-                      'analytics_storage': 'denied',
-                      'ad_storage': 'denied'
-                    });
-                  `,
-                }}
-              />
-              <Script
-                src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-                strategy="afterInteractive"
-              />
-              <Script
-                id="google-analytics"
-                strategy="afterInteractive"
-                dangerouslySetInnerHTML={{
-                  __html: `
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag('js', new Date());
-                    gtag('config', '${gaId}', {
-                      'anonymize_ip': true
-                    });
-                  `,
-                }}
-              />
-            </>
-          );
+        {(() => {
+          try {
+            const rawGaId = process.env.NEXT_PUBLIC_GA_ID;
+            if (!rawGaId) return null;
+            
+            // Clean the GA ID - remove any whitespace, newlines, carriage returns, etc.
+            const gaId = String(rawGaId).replace(/[\r\n\t\s]/g, '').trim();
+            
+            // Validate GA ID format (should start with G-)
+            if (!gaId || !gaId.match(/^G-[A-Z0-9]+$/)) {
+              console.warn('Invalid Google Analytics ID format:', rawGaId);
+              return null;
+            }
+            
+            return (
+              <>
+                <Script
+                  id="google-analytics-consent"
+                  strategy="beforeInteractive"
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                      try {
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('consent', 'default', {
+                          'analytics_storage': 'denied',
+                          'ad_storage': 'denied'
+                        });
+                      } catch(e) {
+                        console.error('GA consent error:', e);
+                      }
+                    `,
+                  }}
+                />
+                <Script
+                  src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+                  strategy="afterInteractive"
+                />
+                <Script
+                  id="google-analytics"
+                  strategy="afterInteractive"
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                      try {
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', '${gaId.replace(/'/g, "\\'")}', {
+                          'anonymize_ip': true
+                        });
+                      } catch(e) {
+                        console.error('GA config error:', e);
+                      }
+                    `,
+                  }}
+                />
+              </>
+            );
+          } catch (error) {
+            console.error('Error setting up Google Analytics:', error);
+            return null;
+          }
         })()}
         <Header />
         <main className="flex-grow">{children}</main>
